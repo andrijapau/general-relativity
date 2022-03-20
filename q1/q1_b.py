@@ -16,11 +16,11 @@ x = linspace(x_min, x_max, 200)
 def N_eq(x):
     if isinstance(x, np.float64) or type(x) == float:
         return A * (g_x / g_s) * quad(lambda a: a ** 2 / sqrt(exp(a ** 2 + x ** 2) + 1), 0, inf, epsabs=inf)[0]
-    # else:
-    #     print(type(x))
-    #     return array(
-    #         [A * (g_x / g_s) * quad(lambda a: a ** 2 / sqrt(exp(a ** 2 + x_ ** 2) + 1), 0, inf, epsabs=inf)[0] for x_ in
-    #          x])
+    else:
+        print(type(x))
+        return array(
+            [A * (g_x / g_s) * quad(lambda a: a ** 2 / sqrt(exp(a ** 2 + x_ ** 2) + 1), 0, inf, epsabs=inf)[0] for x_ in
+             x])
 
 # y = N_eq(x)
 # plt.loglog(x, y, '-')

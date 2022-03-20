@@ -2,12 +2,7 @@ from q1_b import *
 
 import matplotlib.pyplot as plt
 from numpy import sqrt, arange, pi, log
-from scipy.integrate import odeint, solve_ivp
-
-x_min = 0.1
-x_max = 1000.
-dx = 0.01
-x = arange(x_min, x_max, dx)
+from scipy.integrate import odeint
 
 g_w = [1e-4, 1e-3, 1e-2, 1e-1, 1]
 
@@ -28,10 +23,14 @@ def f(x, W):
     return f_result
 
 
+x_min = 0.1
+x_max = 1000.
+dx = 0.01
+x_eval = arange(x_min, x_max, dx)
+
 for g_w_ in g_w:
-    soln = odeint(f, y0=W_eq(x_min), t=x, tfirst=True)
-    # soln2 = solve_ivp(F, [x_min, x_max], [W_eq(x_min)], t_eval=x)
-    plt.loglog(soln, '-')
-    # plt.xlim(min(x), max(x))
+    soln = odeint(f, y0=W_eq(x_min), t=x_eval, tfirst=True)
+    plt.loglog(x_eval, soln, '-')
+    plt.xlim(min(x_eval), max(x_eval))
     plt.title("{}".format(g_w_))
 plt.show()
