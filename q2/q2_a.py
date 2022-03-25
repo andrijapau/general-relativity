@@ -17,17 +17,17 @@ g_star = lambda T: g_low + ((g_high - g_low) / pi) * (arctan((T - T_0) / T_width
 g_star_s = lambda T: g_low_s + ((g_high - g_low_s) / pi) * (arctan((T - T_0) / T_width) + pi / 2)
 
 T_evals = arange(0, T_rh)
-plt.loglog(T_evals, g_star(T_evals), 'r-', label=r'$g_{\star}$')
-plt.loglog(T_evals, g_star_s(T_evals), 'b-', label=r'$g_{\star S}$')
-plt.hlines(g_low, min(T_evals), max(T_evals), linestyles='dashed', colors='k', linewidth=0.5)
-plt.hlines(g_high, min(T_evals), max(T_evals), linestyles='dashed', colors='k', linewidth=0.5)
-plt.hlines(g_low_s, min(T_evals), max(T_evals), linestyles='dashed', colors='k', linewidth=0.5)
-plt.title(r'$g(T)$ Transition')
-plt.ylabel(r'$g$')
-plt.xlabel(r'$T$ (GeV)')
-plt.legend(loc='best')
-plt.savefig('g_transition_analytical', dpi=300)
-plt.show()
+# plt.loglog(T_evals, g_star(T_evals), 'r-', label=r'$g_{\star}$')
+# plt.loglog(T_evals, g_star_s(T_evals), 'b-', label=r'$g_{\star S}$')
+# plt.hlines(g_low, min(T_evals), max(T_evals), linestyles='dashed', colors='k', linewidth=0.5)
+# plt.hlines(g_high, min(T_evals), max(T_evals), linestyles='dashed', colors='k', linewidth=0.5)
+# plt.hlines(g_low_s, min(T_evals), max(T_evals), linestyles='dashed', colors='k', linewidth=0.5)
+# plt.title(r'$g(T)$ Transition')
+# plt.ylabel(r'$g$')
+# plt.xlabel(r'$T$ (GeV)')
+# plt.legend(loc='best')
+# plt.savefig('g_transition_analytical', dpi=300)
+# plt.show()
 #
 # T_evals_zoomed = arange(T_0 - 10, T_0 + 100)
 # plt.loglog(T_evals_zoomed, g_star(T_evals_zoomed), 'r-')
@@ -51,35 +51,71 @@ def T_approx(a):
         return T_rh * (g_high ** (1 / 3)) * (g_low_s ** (-1 / 3)) / a
 
 
-T_approx_array = [T_approx(a_val) for a_val in a]
-plt.loglog(a, T(a), 'k-', linewidth=0.5, label="Analytic")
-plt.loglog(a, T_approx_array, 'b-', linewidth=1, label='Piecewise Approx.')
-plt.title(r'$T(a)$')
-plt.ylabel(r'$T$ GeV')
-plt.xlabel(r'$a$')
-plt.legend(loc='best')
-plt.savefig('temperature', dpi=300)
-plt.show()
-
-plt.loglog(a, T(a), 'k-', linewidth=0.5, label="Analytic")
-plt.loglog(a, T_approx_array, 'b-', linewidth=1, label='Piecewise Approx.')
-plt.title(r'$T(a)$')
-plt.ylabel(r'$T$ GeV')
-plt.xlabel(r'$a$')
-plt.legend(loc='best')
-plt.xlim(10, 1000)
-plt.ylim(1e2, 1e4)
-plt.savefig('temperature_zoomed', dpi=300)
-plt.show()
-
-print("Ratio at a=1e7: ", T_approx(1e7) / T(1e7))
+# T_approx_array = [T_approx(a_val) for a_val in a]
+# plt.loglog(a, T(a), 'k-', linewidth=0.5, label="Analytic")
+# plt.loglog(a, T_approx_array, 'b-', linewidth=1, label='Piecewise Approx.')
+# plt.title(r'$T(a)$')
+# plt.ylabel(r'$T$ GeV')
+# plt.xlabel(r'$a$')
+# plt.legend(loc='best')
+# plt.savefig('temperature', dpi=300)
+# plt.show()
+#
+# plt.loglog(a, T(a), 'k-', linewidth=0.5, label="Analytic")
+# plt.loglog(a, T_approx_array, 'b-', linewidth=1, label='Piecewise Approx.')
+# plt.title(r'$T(a)$')
+# plt.ylabel(r'$T$ GeV')
+# plt.xlabel(r'$a$')
+# plt.legend(loc='best')
+# plt.xlim(10, 1000)
+# plt.ylim(1e2, 1e4)
+# plt.savefig('temperature_zoomed', dpi=300)
+# plt.show()
+#
+# print("Ratio at a=1e7: ", T_approx(1e7) / T(1e7))
 
 # # Solve FRW equation
 # t_rh = ((3 * M_pl * sqrt(10)) / (2 * pi)) * 1 / (T_rh ** 2 * sqrt(g_high))
+# t_rh = (1 / T_rh) / (1.5e24)
 #
-# t_evals = arange(t_rh, 1e2 * t_rh)
-# a_dot = lambda t, a: (pi / (3 * M_pl * sqrt(10))) * sqrt(g_star(t)) / (g_star_s(t) ** (2 / 3)) * (1 / a)
+# t_evals = arange(t_rh, 1e12 * t_rh, step=1e6 * t_rh)
+# a_dot = lambda t, a: (((T_rh ** 2 * pi) / (3 * M_pl * sqrt(10))) * (
+#         g_high ** (2 / 3) * g_star((1 / (t * 1.5e24))) ** (1 / 2)) / (
+#                               g_star_s((1 / (t * 1.5e24))) ** (2 / 3))) * (1 / a)
 # soln = odeint(a_dot, y0=1, t=t_evals, tfirst=True)
+# print(soln)
 #
 # plt.loglog(t_evals, soln)
 # plt.show()
+
+
+# t_rh = ((3 * M_pl * sqrt(10)) / (2 * pi)) * 1 / (T_rh ** 2 * sqrt(g_high))
+t_rh = (1 / T_rh) / (1.5e24)
+print(t_rh)
+t_evals = arange(t_rh, 1e12 * t_rh, step=1e6 * t_rh)
+
+t0 = (1 / T_0) / (1.5e24)
+print(t0)
+
+
+def a_piecewise(t):
+    C_high = ((T_rh ** 2 * pi) / (3 * M_pl * sqrt(10))) * sqrt(g_high)
+    C_low = ((T_rh ** 2 * pi) / (3 * M_pl * sqrt(10))) * (g_high ** (2 / 3) * sqrt(g_low)) / (g_low_s ** (2 / 3))
+    if t > t0:
+        # return sqrt(2 * C_high) * sqrt(t)
+        return sqrt(t / t_rh)
+    if t < t0:
+        # return sqrt(2 * C_low) * sqrt(t)
+        print(((g_high ** (1 / 6) * g_low ** (1 / 2)) / (g_low_s ** (2 / 3))))
+        return ((g_high ** (1 / 6) * g_low ** (1 / 2)) / (g_low_s ** (2 / 3))) * sqrt(t / t_rh)
+
+
+a_soln = [a_piecewise(t_val) for t_val in t_evals]
+plt.loglog(t_evals, a_soln, 'k-', label=r'Approximate', linewidth=1.5)
+plt.vlines(t0, min(a_soln), max(a_soln), linestyles='dashed', colors='k', linewidth=0.5)
+plt.title(r'$a(t)$ Transition')
+plt.ylabel(r'$a$')
+plt.xlabel(r'$t$ (s)')
+plt.legend(loc='best')
+plt.savefig('a_transition_piecewise', dpi=300)
+plt.show()

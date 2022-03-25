@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from numpy import inf, exp, sqrt, linspace, array, pi
 import numpy as np
 from scipy.integrate import quad
+from decimal import Decimal
 
 A = 45 / (4 * pi ** 4)
 g_x = 4
@@ -15,19 +16,24 @@ x = linspace(x_min, x_max, 200)
 
 def N_eq(x):
     if isinstance(x, np.float64) or type(x) == float:
-        return A * (g_x / g_s) * quad(lambda a: a ** 2 / sqrt(exp(a ** 2 + x ** 2) + 1), 0, inf, epsabs=inf)[0]
+        return A * (g_x / g_s) * quad(lambda a: a ** 2 / (exp(sqrt(a ** 2 + x ** 2)) - 1), 0, inf, epsabs=inf)[0]
     else:
         return array(
-            [A * (g_x / g_s) * quad(lambda a: a ** 2 / sqrt(exp(a ** 2 + x_ ** 2) + 1), 0, inf, epsabs=inf)[0] for x_ in
+            [A * (g_x / g_s) * quad(lambda a: a ** 2 / (exp(sqrt(a ** 2 + x_ ** 2)) - 1), 0, inf, epsabs=inf)[0] for x_
+             in
              x])
 
 
 y = N_eq(x)
-plt.loglog(x, y, '-')
+plt.loglog(x, y, 'k-', linewidth=1.5)
+plt.title(r'$N_x^{eq}(x)$')
+plt.ylabel(r'$N_x^{eq}$')
+plt.xlabel(r'$x$')
 plt.xlim(x_min, x_max)
 plt.ylim(1e-10, 1e-1)
+plt.savefig('N_eq_plot', dpi=300)
 plt.show()
 
 x_vals = [0.1, 1., 10.]
 for x in x_vals:
-    print("N_eq({}) = {}".format(x, N_eq(x)))
+    print("N_eq({}) = {}".format(x, "{:.3e}".format(N_eq(x))))
