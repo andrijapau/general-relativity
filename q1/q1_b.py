@@ -25,14 +25,13 @@ def N_eq(x):
 
 
 y = N_eq(x)
-plt.loglog(x, y, 'k-', linewidth=1.5)
-plt.title(r'$N_x^{eq}(x)$')
-plt.ylabel(r'$N_x^{eq}$')
-plt.xlabel(r'$x$')
-plt.xlim(x_min, x_max)
-plt.ylim(1e-10, 1e-1)
-plt.savefig('N_eq_plot', dpi=300)
-plt.show()
+plt.loglog(x, y, 'k--', linewidth=0.5, label=r'$N_{eq}(x)$')
+# plt.title(r'$N_x^{eq}(x)$')
+# plt.ylabel(r'$N_x^{eq}$')
+# plt.xlabel(r'$x$')
+# plt.xlim(x_min, x_max)
+# plt.ylim(1e-10, 1e-1)
+# plt.savefig('N_eq_plot', dpi=300)
 
 x_vals = [0.1, 1., 10.]
 for x in x_vals:
