@@ -173,7 +173,7 @@ class lepton:
             return 7 / 8 * 4
 
         def T(self):
-            return 250 / 1000
+            return 0.25
 
     class muon:
         def __init__(self):
@@ -193,7 +193,7 @@ class lepton:
             return 7 / 8 * 4
 
         def T(self):
-            pass
+            return 200
 
 
 class photon:
@@ -212,7 +212,10 @@ class neutrino:
         pass
 
     def g(self):
-        return 7 / 8 * 2
+        return 7 / 8 * 6 * (4 / 11) ** (4 / 3)
+
+    def g_s(self):
+        return 7 / 8 * 6 * (4 / 11)
 
     def T(self):
         pass

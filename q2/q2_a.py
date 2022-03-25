@@ -62,10 +62,10 @@ plt.show()
 print("Ratio at a=1e7: ", T_approx(1e7) / T(1e7))
 
 # Solve FRW equation
-t_rh = 1
+t_rh = ((3 * M_pl * sqrt(10)) / (2 * pi)) * 1 / (T_rh ** 2 * sqrt(g_high))
 
-t_evals = arange(t_rh, 1e5 * t_rh)
-a_dot = lambda t, a: (pi / 3) * sqrt(g_star(a) / 10) * (1 / M_pl) * T(a) ** 2
+t_evals = arange(t_rh, 1e2 * t_rh)
+a_dot = lambda t, a: (pi / (3 * M_pl * sqrt(10))) * sqrt(g_star(t)) / (g_star_s(t) ** (2 / 3)) * (1 / a)
 soln = odeint(a_dot, y0=1, t=t_evals, tfirst=True)
 
 plt.loglog(t_evals, soln)
