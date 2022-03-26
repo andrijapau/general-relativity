@@ -28,7 +28,7 @@ def l(g_w):
 
     # return ((2 * pi ** 2) / 45) * g_s * (m_x ** 3 / H()) * sigma_v()
     # https://www.ippp.dur.ac.uk/~dcerdeno/Dark_Matter_Lab_files/DM.pdf (2.39)
-    return 1e-10 * ((2 * pi ** 2) / 45) * g_s * m_x ** 3 * sigma_v() / H()
+    return ((2 * pi ** 2) / 45) * g_s * m_x ** 3 * sigma_v() / H()
 
 
 def dfX(logx, logN, g_w):
