@@ -89,24 +89,23 @@ def g_star(T):
 T_print = np.array([200, 50, 20, 10, 0.5, 0.1, 0.0001]) * 1000
 print("(T,g_star,g_star_s)")
 for T in T_print:
-    print("{0},{1},{2}".format(T, g_star(T), g_star_s(T)))
+    print("{0},{1},{2}".format(T / 1000, round(g_star(T), 2), round(g_star_s(T), 2)))
 
 T_threshold = [100, 30, 15, 1, 0.2, 0.05, 0.00025]  # GeV
 T = np.arange(start=0.01, stop=200 * 1000, step=0.01)  # MeV
 
-g_star = [g_star(T_val) for T_val in T]
-g_star_s = [g_star_s(T_val) for T_val in T]
+g_star_array = [g_star(T_val) for T_val in T]
+g_star_s_array = [g_star_s(T_val) for T_val in T]
 
 for T_val in T_threshold:
     plt.vlines(T_val, 0, 200, linestyles='dashed', colors='k', linewidth=0.75)
 
-plt.loglog(T / 1000, g_star, 'k-', linewidth=1)
-plt.loglog(T / 1000, g_star_s, 'r-', linewidth=1)
+plt.loglog(T / 1000, g_star_array, 'k-', linewidth=1)
+plt.loglog(T / 1000, g_star_s_array, 'r-', linewidth=1)
 
 plt.xlabel(r'$T$ (GeV)')
 plt.ylabel(r'$g_{\star}(T)$')
 plt.axis([max(T / 1000), min(T / 1000), 1, 200])
 plt.legend(["$g_{\star}$", "$g_{\star S}$"])
 plt.savefig(fname='g_star_T', dpi=300)
-
 plt.show()

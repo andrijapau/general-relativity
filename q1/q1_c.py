@@ -2,9 +2,10 @@ import warnings
 
 from q1_b import *
 # https://www.diva-portal.org/smash/get/diva2:720978/FULLTEXT01.pdf
+from numpy import diff
 
 import matplotlib.pyplot as plt
-from numpy import sqrt, arange, pi, log
+from numpy import sqrt, arange, pi, log, diff
 from scipy.integrate import odeint, ode
 
 
@@ -31,7 +32,18 @@ def l(g_w):
     return ((2 * pi ** 2) / 45) * g_s * m_x ** 3 * sigma_v() / H()
 
 
+g_w_array = [1e-4, 1e-3, 1e-2, 1e-1, 1]
+# g_w_array = [1e-3]
+N = 10000
+x_min = 0.1
+x_max = 1000.
+x_evals = np.linspace(log(x_min), log(x_max), N)
+dlogx = x_evals[1] - x_evals[0]
+
+
 def dfX(logx, logN, g_w):
+    # + 2 * l(g_w) * exp(-logx) * (
+    #         exp(logN) - exp(-logN + 2 * log(N_eq(exp(logx))))) * dN_eq(exp(logx))
     return l(g_w) * (exp(logN) - exp(-logN + 2 * log(N_eq(exp(logx))))) * exp(-logx)
 
 
@@ -39,19 +51,29 @@ def dfN(logx, logN, g_w):
     return - l(g_w) * (exp(logN) + exp(-logN + 2 * log(N_eq(exp(logx))))) * exp(-logx)
 
 
-def f(logx, logN):
+def f(logx, logN, g_w):
     return -l(g_w) * (exp(logN) - exp(-logN + 2 * log(N_eq(exp(logx))))) * exp(-logx)
 
 
+def df(logx, logN, g_w):
+    return f(logx, logN) + dfX(logx, logN, g_w) * logx + dfN(logx, logN, g_w) * logN
+
+
 def dN(logx, logN, dlogx, g_w):
-    return (f(logx, logN) * dlogx + dfX(logx, logN, g_w) * (dlogx ** 2)) / (1 - dfN(logx, logN, g_w) * dlogx)
+    return (f(logx, logN, g_w) * dlogx + dfX(logx, logN, g_w) * (dlogx ** 2)) / (1 - dfN(logx, logN, g_w) * dlogx)
+    # return f(logx, logN) + dfX(logx, logN, g_w) * logx + dfN(logx, logN, g_w) * logN
 
 
-g_w_array = [1e-4, 1e-3, 1e-2, 1e-1, 1]
-dx = 0.05
-x_min = 0.1
-x_max = 1000.
-x_evals = log(np.arange(x_min, x_max + dx, step=dx))
+# soln = odeint(f, y0=log(N_eq(exp(x_min))), t=x_evals, tfirst=True)
+# plt.loglog(exp(x_evals), exp(soln))
+# plt.title(r'$N_x(x)$')
+# plt.ylabel(r'$N_x$')
+# plt.xlabel(r'$x$')
+# plt.xlim(x_min, x_max)
+# plt.legend(loc='best')
+# # plt.savefig('g_w_transitions', dpi=300)
+# plt.show()
+
 for g_w in g_w_array:
     log_N_x = []
     val = log(N_eq(exp(x_min)))
@@ -60,7 +82,7 @@ for g_w in g_w_array:
             log_N_x.append([val])
         else:
             old_val = val
-            val += dN(x_evals[i], old_val, x_evals[i] - x_evals[i - 1], g_w)
+            val += dN(x_evals[i], old_val, dlogx, g_w)
             log_N_x.append([val])
     if g_w >= 1e-3:
         print("Experimental N(oo) = {} @ gw = {}".format(exp(log_N_x[-1]), g_w))
