@@ -1,25 +1,32 @@
+# Import modules
+
 import matplotlib.pyplot as plt
 import numpy as np
 from q2_b import g_star, g_star_s
 
+# Define a, t ranges
 a_range = np.arange(np.log(1e11), np.log(1e19), 0.0075)
 t_range = np.arange(np.log(1e12), np.log(1e26), 0.0075)
 
+# Define Constants
 T_rh = 1e14
 M_pl = 2.4e18
 g_high = g_star(T_rh)
 t_rh = ((3 * M_pl * np.sqrt(10)) / (2 * np.pi)) * 1 / (T_rh ** 2 * np.sqrt(g_high))
 
+# Define T thresholds
 T_thres = [100, 30, 15, 1, 0.2, 0.05, 0.00025]  # GeV
+
+# Define a thresholds
+a_thres = [T_rh / T_crit for T_crit in T_thres]
+
+# Data structure to help later
 g_before_after = []
 for T in T_thres:
     g_before_after.append([g_star_s(T * 1000 + 10), g_star_s(T * 1000 - 10)])
 g_star_before_after = []
 for T in T_thres:
     g_star_before_after.append([g_star(T * 1000 + 10), g_star(T * 1000 - 10)])
-print(g_before_after)
-a_thres = [T_rh / T_crit for T_crit in T_thres]
-print(a_thres[0])
 
 
 def T_approx(a):
@@ -42,7 +49,7 @@ def T_approx(a):
         return T_a_prop_const * (g_before_after[6][1] ** (-1 / 3)) / np.exp(a)
 
 
-def T_approx_test(a):
+def T_approx_exp(a):
     T_a_prop_const = T_rh * g_high ** (1 / 3)
     if a < a_thres[0]:
         return T_a_prop_const * (g_before_after[0][0] ** (-1 / 3)) / a
@@ -62,6 +69,7 @@ def T_approx_test(a):
         return T_a_prop_const * (g_before_after[6][1] ** (-1 / 3)) / a
 
 
+# Plot T(a)
 T_approx_array = [T_approx(a_val) for a_val in a_range]
 plt.loglog(np.exp(a_range), T_approx_array, 'b-', label=r'Piecewise Approx.', linewidth=1)
 for a in a_thres:
@@ -74,6 +82,7 @@ plt.savefig('T_a_transition_universe', dpi=300)
 plt.show()
 
 
+# Calculate t0 depending on the thresholds
 def calculatet0(T_thres, i):
     return ((3 * M_pl * np.sqrt(10)) / (2 * np.pi)) * 1 / (
             T_thres ** 2 * np.sqrt(0.5 * (g_before_after[i][0] + g_before_after[i][1])))
@@ -82,12 +91,12 @@ def calculatet0(T_thres, i):
 t0 = []
 for i in range(len(T_thres)):
     t0.append(calculatet0(T_thres[i], i))
-print(t0)
 
 a_t_prop_const = (1 / np.sqrt(t_rh)) * np.sqrt(g_star(T_rh) ** (1 / 6))
 
 
 def a_piecewise(t):
+    a_t_prop_const = (1 / np.sqrt(t_rh)) * np.sqrt(g_star(T_rh) ** (1 / 6))
     if np.exp(t) < t0[0]:
         return a_t_prop_const * np.sqrt(
             (g_star_before_after[0][0] ** (1 / 2)) / (g_before_after[0][0] ** (2 / 3))) * np.sqrt(
@@ -122,6 +131,7 @@ def a_piecewise(t):
             np.exp(t))
 
 
+# Plot a(t)
 a_approx_array = [a_piecewise(t_val) for t_val in t_range]
 plt.loglog(np.exp(t_range), a_approx_array, 'b-', label=r'Piecewise Approx.', linewidth=1)
 for t0_val in t0:
@@ -133,11 +143,11 @@ plt.legend(loc='best')
 plt.savefig('a_t_transition_universe', dpi=300)
 plt.show()
 
-### T(t)
-T_t_array = [T_approx_test(a_val) for a_val in a_approx_array]
+# Plot T(t)
+T_t_array = [T_approx_exp(a_val) for a_val in a_approx_array]
 plt.loglog(np.exp(t_range), T_t_array, 'b-', label=r'Piecewise Approx.', linewidth=1)
-# for t0_val in t0:
-# plt.vlines(t0_val, min(T_t_array), max(T_t_array), linestyles='dashed', colors='k', linewidth=0.5)
+for t0_val in t0:
+    plt.vlines(t0_val, min(T_t_array), max(T_t_array), linestyles='dashed', colors='k', linewidth=0.5)
 plt.title(r'$T(t)$ Transition')
 plt.ylabel(r'$T$ (GeV)')
 plt.xlabel(r'$t$ (1/Gev)')
