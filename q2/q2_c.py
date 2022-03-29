@@ -154,3 +154,21 @@ plt.xlabel(r'$t$ (1/Gev)')
 plt.legend(loc='best')
 plt.savefig('T_t_transition_universe', dpi=300)
 plt.show()
+
+
+# Print
+def latex_float(f):
+    float_str = "{0:.3g}".format(f)
+    if "e" in float_str:
+        base, exponent = float_str.split("e")
+        return r"{0} \times 10^{{{1}}}".format(base, int(exponent))
+    else:
+        return float_str
+
+
+t_print = [i * np.log(10) for i in range(13, 27)]
+print("a(t), T(t)")
+for i in range(len(t_print)):
+    print(
+        "$10^{{{}}}$ & ${}$ & {} \\\\ \hline".format(i + 13, latex_float(a_piecewise(t_print[i])),
+                                                     latex_float(T_approx_exp(a_piecewise(t_print[i])))))
