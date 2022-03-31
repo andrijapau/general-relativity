@@ -131,6 +131,8 @@ plt.legend(loc='best')
 plt.savefig('a_t_transition', dpi=300)
 plt.show()
 
+print("Ratio at t=1e12T_rh: ", soln[-1] / a_soln[-1])
+
 # ============================================
 # Plotting T(t) Analytic and Approximate Form
 # ============================================
