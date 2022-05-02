@@ -1,12 +1,12 @@
+# Import modules
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+from scipy.integrate import odeint
 
 plt.rcParams.update({'font.size': 16})
-
 matplotlib.rcParams['mathtext.fontset'] = 'stix'
 matplotlib.rcParams['font.family'] = 'STIXGeneral'
-from scipy.integrate import odeint
 
 
 def V(r, M):
@@ -32,14 +32,8 @@ for b in b_vals:
     soln = odeint(drdphi, y0=r0, t=phi_vals, tfirst=True, args=(M, b))
     r = soln[:, 0]
     plt.plot(phi_vals, r, linewidth=0.25, color='black')
-    # plt.plot(r * np.cos(phi_vals), r * np.sin(phi_vals), linewidth=0.25,color='black')
 plt.hlines(y=3 * M, xmin=phi_min, xmax=phi_max, colors='black', linewidth=2, linestyles={"dashed"},
            label=r'$r_\star = 3M$')
-# phi_min, phi_max = 0, 2 * np.pi
-# phi_vals = np.arange(phi_min, phi_max, 0.01)
-# plt.plot(3 * M * np.cos(phi_vals), 3 * M * np.sin(phi_vals), 'k--', linewidth=2, label=r'$r_\star = 3M$')
-
-# plt.gca().set_aspect('equal')
 plt.locator_params(axis='y', nbins=5)
 plt.locator_params(axis='x', nbins=5)
 plt.xlim(0, 25)
